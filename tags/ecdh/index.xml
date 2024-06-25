@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ecdh on Fwame&#39;s writeup collection</title>
-    <link>http://82.59.104.146:4200/tags/ecdh/</link>
+    <link>https://writeups.deflame.xyz/tags/ecdh/</link>
     <description>Recent content in Ecdh on Fwame&#39;s writeup collection</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 24 Jun 2024 23:30:35 +0200</lastBuildDate>
-    <atom:link href="http://82.59.104.146:4200/tags/ecdh/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://writeups.deflame.xyz/tags/ecdh/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Test post</title>
-      <link>http://82.59.104.146:4200/posts/test/</link>
+      <link>https://writeups.deflame.xyz/posts/test/</link>
       <pubDate>Mon, 24 Jun 2024 23:30:35 +0200</pubDate>
-      <guid>http://82.59.104.146:4200/posts/test/</guid>
+      <guid>https://writeups.deflame.xyz/posts/test/</guid>
       <description>Title Title2 Sample text&#xA;import random def main(x): res = 0 for i in range(x): res += i * 2 print(f&amp;#34;{res = }&amp;#34;) if __name__ == &amp;#34;__main__&amp;#34;: main(999) $$ ax_n + b = x_{n+1} \bmod N$$ </description>
     </item>
   </channel>

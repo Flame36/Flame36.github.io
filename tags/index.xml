@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Fwame&#39;s writeup collection</title>
-    <link>http://82.59.104.146:4200/tags/</link>
+    <link>https://writeups.deflame.xyz/tags/</link>
     <description>Recent content in Tags on Fwame&#39;s writeup collection</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 24 Jun 2024 23:30:35 +0200</lastBuildDate>
-    <atom:link href="http://82.59.104.146:4200/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://writeups.deflame.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Crypto</title>
-      <link>http://82.59.104.146:4200/tags/crypto/</link>
+      <link>https://writeups.deflame.xyz/tags/crypto/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://82.59.104.146:4200/tags/crypto/</guid>
+      <guid>https://writeups.deflame.xyz/tags/crypto/</guid>
       <description></description>
     </item>
     <item>
       <title>Ecc</title>
-      <link>http://82.59.104.146:4200/tags/ecc/</link>
+      <link>https://writeups.deflame.xyz/tags/ecc/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://82.59.104.146:4200/tags/ecc/</guid>
+      <guid>https://writeups.deflame.xyz/tags/ecc/</guid>
       <description></description>
     </item>
     <item>
       <title>Ecdh</title>
-      <link>http://82.59.104.146:4200/tags/ecdh/</link>
+      <link>https://writeups.deflame.xyz/tags/ecdh/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://82.59.104.146:4200/tags/ecdh/</guid>
+      <guid>https://writeups.deflame.xyz/tags/ecdh/</guid>
       <description></description>
     </item>
     <item>
       <title>Blue</title>
-      <link>http://82.59.104.146:4200/tags/blue/</link>
+      <link>https://writeups.deflame.xyz/tags/blue/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://82.59.104.146:4200/tags/blue/</guid>
+      <guid>https://writeups.deflame.xyz/tags/blue/</guid>
       <description></description>
     </item>
     <item>
       <title>Green</title>
-      <link>http://82.59.104.146:4200/tags/green/</link>
+      <link>https://writeups.deflame.xyz/tags/green/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://82.59.104.146:4200/tags/green/</guid>
+      <guid>https://writeups.deflame.xyz/tags/green/</guid>
       <description></description>
     </item>
     <item>
       <title>Red</title>
-      <link>http://82.59.104.146:4200/tags/red/</link>
+      <link>https://writeups.deflame.xyz/tags/red/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://82.59.104.146:4200/tags/red/</guid>
+      <guid>https://writeups.deflame.xyz/tags/red/</guid>
       <description></description>
     </item>
   </channel>

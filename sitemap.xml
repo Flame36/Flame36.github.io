@@ -2,48 +2,48 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://82.59.104.146:4200/tags/crypto/</loc>
+    <loc>https://writeups.deflame.xyz/tags/crypto/</loc>
     <lastmod>2024-06-24T23:30:35+02:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/tags/ecc/</loc>
+    <loc>https://writeups.deflame.xyz/tags/ecc/</loc>
     <lastmod>2024-06-24T23:30:35+02:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/tags/ecdh/</loc>
+    <loc>https://writeups.deflame.xyz/tags/ecdh/</loc>
     <lastmod>2024-06-24T23:30:35+02:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/posts/</loc>
+    <loc>https://writeups.deflame.xyz/posts/</loc>
     <lastmod>2024-06-24T23:30:35+02:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/tags/</loc>
+    <loc>https://writeups.deflame.xyz/tags/</loc>
     <lastmod>2024-06-24T23:30:35+02:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/posts/test/</loc>
+    <loc>https://writeups.deflame.xyz/posts/test/</loc>
     <lastmod>2024-06-24T23:30:35+02:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/tags/blue/</loc>
+    <loc>https://writeups.deflame.xyz/tags/blue/</loc>
     <lastmod>2023-03-15T11:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/tags/green/</loc>
+    <loc>https://writeups.deflame.xyz/tags/green/</loc>
     <lastmod>2023-03-15T11:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/posts/post-3/</loc>
+    <loc>https://writeups.deflame.xyz/posts/post-3/</loc>
     <lastmod>2023-03-15T11:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/tags/red/</loc>
+    <loc>https://writeups.deflame.xyz/tags/red/</loc>
     <lastmod>2023-03-15T11:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/posts/post-2/</loc>
+    <loc>https://writeups.deflame.xyz/posts/post-2/</loc>
     <lastmod>2023-02-15T10:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/posts/post-1/</loc>
+    <loc>https://writeups.deflame.xyz/posts/post-1/</loc>
     <lastmod>2023-01-15T09:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/about/</loc>
+    <loc>https://writeups.deflame.xyz/about/</loc>
     <lastmod>2023-01-01T08:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/</loc>
+    <loc>https://writeups.deflame.xyz/</loc>
     <lastmod>2023-01-01T08:00:00-07:00</lastmod>
   </url><url>
-    <loc>http://82.59.104.146:4200/categories/</loc>
+    <loc>https://writeups.deflame.xyz/categories/</loc>
   </url>
 </urlset>
