@@ -1,0 +1,15 @@
+baseURL = 'https://writeups.deflame.xyz/'
+languageCode = 'en-us'
+title = "Fwame's writeup collection"
+theme = 'writeups-theme'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['$', '$']]
+[params]
+  math = true
