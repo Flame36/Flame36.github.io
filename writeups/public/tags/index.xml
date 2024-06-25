@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Fwame&#39;s writeup collection</title>
+    <link>http://82.59.104.146:4200/tags/</link>
+    <description>Recent content in Tags on Fwame&#39;s writeup collection</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 24 Jun 2024 23:30:35 +0200</lastBuildDate>
+    <atom:link href="http://82.59.104.146:4200/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Crypto</title>
+      <link>http://82.59.104.146:4200/tags/crypto/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://82.59.104.146:4200/tags/crypto/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ecc</title>
+      <link>http://82.59.104.146:4200/tags/ecc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://82.59.104.146:4200/tags/ecc/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ecdh</title>
+      <link>http://82.59.104.146:4200/tags/ecdh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://82.59.104.146:4200/tags/ecdh/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Blue</title>
+      <link>http://82.59.104.146:4200/tags/blue/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://82.59.104.146:4200/tags/blue/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Green</title>
+      <link>http://82.59.104.146:4200/tags/green/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://82.59.104.146:4200/tags/green/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Red</title>
+      <link>http://82.59.104.146:4200/tags/red/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://82.59.104.146:4200/tags/red/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

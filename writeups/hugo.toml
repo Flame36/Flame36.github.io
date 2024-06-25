@@ -1,0 +1,15 @@
+baseURL = 'http://82.59.104.146:4200/'
+languageCode = 'en-us'
+title = "Fwame's writeup collection"
+theme = 'writeups-theme'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['$', '$']]
+[params]
+  math = true
