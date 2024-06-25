@@ -3,6 +3,7 @@ baseURL = 'https://writeups.deflame.xyz/'
 languageCode = 'en-us'
 title = "Fwame's writeup collection"
 theme = 'writeups-theme'
+publishDir = "../docs"
 
 [markup]
   [markup.goldmark]
