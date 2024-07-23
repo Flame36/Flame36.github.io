@@ -22,7 +22,7 @@
 <meta name="viewport" content="width=device-width">
 <title>Crypto | Fwame&#39;s writeup collection</title>
 
-      <link rel="stylesheet" href="/css/main.min.951b181f603cfc12b74845e0cf8fe827947e4538e6e009bdef1c9bc5a1585c54.css" integrity="sha256-lRsYH2A8/BK3SEXgz4/oJ5R&#43;RTjm4Am97xybxaFYXFQ=" crossorigin="anonymous">
+      <link rel="stylesheet" href="/css/main.min.24b18cdb001957fd4477d11f232d0650f88b10203639bc6342f47d582f48c6c9.css" integrity="sha256-JLGM2wAZV/1Ed9EfIy0GUPiLECA2ObxjQvR9WC9Ixsk=" crossorigin="anonymous">
 
 
       <script src="/js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js" integrity="sha256-I80MfYNyY7nq65buLZzPopadqj&#43;gD6HB/ocBqbhyUaE=" crossorigin="anonymous"></script>
@@ -65,6 +65,39 @@ import random def main(x): res = 0 for i in range(x): res += i * 2 print(f&#34;{
       <a href="/tags/ecc/">ecc</a>
       <a href="/tags/crypto/">crypto</a>
       <a href="/tags/ecdh/">ecdh</a>
+
+        </div>
+      </div>
+    </a>
+  
+    <a href="/posts/mocactf24/rps/">
+      <div class="bubble">
+        <h2 style="margin-bottom: .5rem;">RPS</h2>
+        In this challenge we&rsquo;re given a rock-paper-scissors playing server with a custom cookie system and our objective is to win 100 consecutive games. The state is stored completely inside of a session cookie encrypted with a custom symmetric cipher.
+import json import os from random import SystemRandom from base64 import b64decode, b64encode from dataclasses import asdict, dataclass, field from hashlib import sha256 from zlib import crc32 from Crypto.Cipher import AES from flask import Flask, make_response, render_template, request app = Flask(__name__) FLAG = os.
+        <div class="tags">
+          
+      <a href="/tags/mocactf24/">mocactf24</a>
+      <a href="/tags/challenge/">challenge</a>
+      <a href="/tags/symmetric/">symmetric</a>
+      <a href="/tags/web/">web</a>
+      <a href="/tags/crypto/">crypto</a>
+
+        </div>
+      </div>
+    </a>
+  
+    <a href="/posts/mocactf24/rsa-w-leak/">
+      <div class="bubble">
+        <h2 style="margin-bottom: .5rem;">RSA W Leak</h2>
+        Like the name implies, this is a normal RSA with leak challenge: we are given a standard RSA public key, ciphertext and a leak $$ \text{leak} = \lfloor2^{8192}(\frac{r_0}{\phi(N)} + \frac{r_1}{N}) \rfloor$$ with $r_0$ and $r_1$ random integers.
+from Crypto.Util.number import getStrongPrime import secrets from mpmath import mp, mpf p = getStrongPrime(1024) q = getStrongPrime(1024) n = p*q e = 65537 phi = (p-1)*(q-1) d = pow(e, -1, phi) mp.dps = 8192 leak = mpf(secrets.
+        <div class="tags">
+          
+      <a href="/tags/mocactf24/">mocactf24</a>
+      <a href="/tags/challenge/">challenge</a>
+      <a href="/tags/lattices/">lattices</a>
+      <a href="/tags/crypto/">crypto</a>
 
         </div>
       </div>

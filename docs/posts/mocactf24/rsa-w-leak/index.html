@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '\\[', right: '\\]', display: true},   
+        {left: '$$', right: '$$', display: true},     
+        {left: '$', right: '$', display: false},  
+      ],
+      throwOnError : false
+    });
+  });
+</script>
+  
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>RSA W Leak | Fwame&#39;s writeup collection</title>
+
+      <link rel="stylesheet" href="/css/main.min.24b18cdb001957fd4477d11f232d0650f88b10203639bc6342f47d582f48c6c9.css" integrity="sha256-JLGM2wAZV/1Ed9EfIy0GUPiLECA2ObxjQvR9WC9Ixsk=" crossorigin="anonymous">
+
+
+      <script src="/js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js" integrity="sha256-I80MfYNyY7nq65buLZzPopadqj&#43;gD6HB/ocBqbhyUaE=" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <header>
+    <h1>Fwame&#39;s writeup collection</h1>
+
+  <nav>
+    <ul>
+      <span style="margin-right: .5rem;">
+        <a href="/">
+        Posts
+        </a>
+      </span>
+      <span style="margin-right: .5rem;">
+        <a href="/about/">
+        About
+        </a>
+      </span>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <h1>RSA W Leak</h1>
+
+  
+  
+  <div style="display: flex; justify-content: space-between;">
+    <time datetime="2023-01-15T09:00:00-07:00">January 15, 2023</time>
+    <span style="color: var(--h2-color);">
+      <a href="/tags/mocactf24/">mocactf24</a>
+      <a href="/tags/challenge/">challenge</a>
+      <a href="/tags/lattices/">lattices</a>
+      <a href="/tags/crypto/">crypto</a>
+</span>
+  </div>
+
+  <p>Like the name implies, this is a normal RSA with leak challenge:
+we are given a standard RSA public key, ciphertext and a leak
+</p>
+$$ \text{leak} = \lfloor2^{8192}(\frac{r_0}{\phi(N)} + \frac{r_1}{N}) \rfloor$$
+<p>
+with $r_0$ and $r_1$ random integers.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Util.number <span style="color:#f92672">import</span> getStrongPrime
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> secrets
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mpmath <span style="color:#f92672">import</span> mp, mpf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> getStrongPrime(<span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>q <span style="color:#f92672">=</span> getStrongPrime(<span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">=</span> p<span style="color:#f92672">*</span>q
+</span></span><span style="display:flex;"><span>e <span style="color:#f92672">=</span> <span style="color:#ae81ff">65537</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>phi <span style="color:#f92672">=</span> (p<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>(q<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>d <span style="color:#f92672">=</span> pow(e, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, phi)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mp<span style="color:#f92672">.</span>dps <span style="color:#f92672">=</span> <span style="color:#ae81ff">8192</span>
+</span></span><span style="display:flex;"><span>leak <span style="color:#f92672">=</span> mpf(secrets<span style="color:#f92672">.</span>randbelow(n)) <span style="color:#f92672">/</span> mpf(phi) 
+</span></span><span style="display:flex;"><span>leak <span style="color:#f92672">+=</span> mpf(secrets<span style="color:#f92672">.</span>randbelow(n)) <span style="color:#f92672">/</span> mpf(n)
+</span></span><span style="display:flex;"><span>leak <span style="color:#f92672">*=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">**</span><span style="color:#ae81ff">8192</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#39;flag.txt&#39;</span>)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> len(flag) <span style="color:#f92672">==</span> <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(flag<span style="color:#f92672">.</span>encode(), <span style="color:#e6db74">&#39;big&#39;</span>)
+</span></span><span style="display:flex;"><span>ct <span style="color:#f92672">=</span> pow(flag, e, n)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;n = </span><span style="color:#e6db74">{</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ct = </span><span style="color:#e6db74">{</span>ct<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;leak = </span><span style="color:#e6db74">{</span>int(leak)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span></code></pre></div><h2 id="the-solve">The Solve</h2>
+<p>If we multiply the leak by $N$ we have
+</p>
+$$ 2^{8192}(\frac{r_0 N}{\phi(N)} + r_1) $$
+<p>Since $r_1$ is an integer we can get rid of it by considering the leak modulo $2^{8192}$
+</p>
+$$ 2^{8192}(\frac{r_0 N}{\phi(N)} + r_1) = $$
+$$ 2^{8192}\frac{r_0 N}{\phi(N)} + 2^{8192}r_1 = $$
+$$ 2^{8192}\frac{r_0 N}{\phi(N)} \bmod 2^{8192}$$
+<p>
+rewriting $r_0 = r_a\phi(N) + r_b$
+</p>
+$$ 2^{8192}(r_a + \frac{r_b}{\phi(N)}) = $$
+$$2^{8192}\frac{r_b}{\phi(N)} \bmod 2^{8192}$$
+<p>
+If we express this as
+</p>
+$$\phi(N)(\text{leak\_dec}) -r_b(2^{8192}) \approx 0$$
+<p>
+<em>mmhh&hellip; this looks&hellip; latticy&hellip;</em>
+<br>
+<br>
+We can construct a lattice out of the following matrix
+</p>
+$$ \begin{bmatrix}2^{8192} & 0\\\text{leak\_dec} & 1\end{bmatrix} $$
+<p>and we will find that the shortest vector will be
+</p>
+$$ v_s = \begin{bmatrix}\phi(N)(\text{leak\_dec}) \bmod 2^{8192} & \phi(N)\end{bmatrix} $$
+<p>Welp, we have $\phi(N)$, we can calculate the private key ($d$, $N$) and decrypt as usual.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Util.number <span style="color:#f92672">import</span> inverse, long_to_bytes
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sage.all <span style="color:#f92672">import</span> matrix, ZZ
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sage.modules.free_module_integer <span style="color:#f92672">import</span> IntegerLattice
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">=</span> <span style="color:#ae81ff">2799674666.</span><span style="color:#f92672">..</span>
+</span></span><span style="display:flex;"><span>ct <span style="color:#f92672">=</span> <span style="color:#ae81ff">2105216850.</span><span style="color:#f92672">..</span>
+</span></span><span style="display:flex;"><span>leak <span style="color:#f92672">=</span> <span style="color:#ae81ff">8035403848.</span><span style="color:#f92672">..</span>
+</span></span><span style="display:flex;"><span>e <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10001</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>leak_dec <span style="color:#f92672">=</span> (leak <span style="color:#f92672">*</span> n) <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">**</span><span style="color:#ae81ff">8192</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">2</span><span style="color:#f92672">**</span><span style="color:#ae81ff">8192</span>, <span style="color:#ae81ff">0</span>],
+</span></span><span style="display:flex;"><span>    [leak_dec, <span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">=</span> matrix(ZZ, m)
+</span></span><span style="display:flex;"><span>L <span style="color:#f92672">=</span> IntegerLattice(m)<span style="color:#f92672">.</span>shortest_vector()
+</span></span><span style="display:flex;"><span>fi <span style="color:#f92672">=</span> L[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> pow(<span style="color:#ae81ff">2</span>, fi, n) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>d <span style="color:#f92672">=</span> inverse(e, fi)
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> pow(ct, d, n)
+</span></span><span style="display:flex;"><span>print(long_to_bytes(flag)<span style="color:#f92672">.</span>decode())
+</span></span></code></pre></div><p><img src="flag.png" alt="The flag"></p>
+
+
+  </main>
+  <footer>
+    <p>Copyright 2024. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>

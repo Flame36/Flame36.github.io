@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '\\[', right: '\\]', display: true},   
+        {left: '$$', right: '$$', display: true},     
+        {left: '$', right: '$', display: false},  
+      ],
+      throwOnError : false
+    });
+  });
+</script>
+  
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>RPS | Fwame&#39;s writeup collection</title>
+
+      <link rel="stylesheet" href="/css/main.min.24b18cdb001957fd4477d11f232d0650f88b10203639bc6342f47d582f48c6c9.css" integrity="sha256-JLGM2wAZV/1Ed9EfIy0GUPiLECA2ObxjQvR9WC9Ixsk=" crossorigin="anonymous">
+
+
+      <script src="/js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js" integrity="sha256-I80MfYNyY7nq65buLZzPopadqj&#43;gD6HB/ocBqbhyUaE=" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <header>
+    <h1>Fwame&#39;s writeup collection</h1>
+
+  <nav>
+    <ul>
+      <span style="margin-right: .5rem;">
+        <a href="/">
+        Posts
+        </a>
+      </span>
+      <span style="margin-right: .5rem;">
+        <a href="/about/">
+        About
+        </a>
+      </span>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <h1>RPS</h1>
+
+  
+  
+  <div style="display: flex; justify-content: space-between;">
+    <time datetime="2023-01-15T09:00:00-07:00">January 15, 2023</time>
+    <span style="color: var(--h2-color);">
+      <a href="/tags/mocactf24/">mocactf24</a>
+      <a href="/tags/challenge/">challenge</a>
+      <a href="/tags/symmetric/">symmetric</a>
+      <a href="/tags/web/">web</a>
+      <a href="/tags/crypto/">crypto</a>
+</span>
+  </div>
+
+  <p>In this challenge we&rsquo;re given a rock-paper-scissors playing server with a
+custom cookie system and our objective is to win 100 consecutive games.
+The state is stored completely inside of a session cookie encrypted with
+a custom symmetric cipher.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> random <span style="color:#f92672">import</span> SystemRandom
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64decode, b64encode
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dataclasses <span style="color:#f92672">import</span> asdict, dataclass, field
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> hashlib <span style="color:#f92672">import</span> sha256
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> zlib <span style="color:#f92672">import</span> crc32
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Cipher <span style="color:#f92672">import</span> AES
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask, make_response, render_template, request
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> Flask(__name__)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>FLAG <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;FLAG&#34;</span>, <span style="color:#e6db74">&#34;PWNX</span><span style="color:#e6db74">{placeholder}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChecksummedCipher</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;add checksum to be safe from tampering&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CRC0 <span style="color:#f92672">=</span> crc32(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\0\0\0\0</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, key: bytes):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>key <span style="color:#f92672">=</span> key
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encrypt</span>(self, plaintext: bytes) <span style="color:#f92672">-&gt;</span> bytes:
+</span></span><span style="display:flex;"><span>        nonce <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>urandom(<span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>        cipher <span style="color:#f92672">=</span> AES<span style="color:#f92672">.</span>new(self<span style="color:#f92672">.</span>key, AES<span style="color:#f92672">.</span>MODE_GCM, nonce<span style="color:#f92672">=</span>nonce)
+</span></span><span style="display:flex;"><span>        crc <span style="color:#f92672">=</span> crc32(plaintext)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> nonce <span style="color:#f92672">+</span> cipher<span style="color:#f92672">.</span>encrypt(plaintext <span style="color:#f92672">+</span> crc<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#34;little&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decrypt</span>(self, ciphertext: bytes) <span style="color:#f92672">-&gt;</span> bytes:
+</span></span><span style="display:flex;"><span>        nonce <span style="color:#f92672">=</span> ciphertext[:<span style="color:#ae81ff">8</span>]
+</span></span><span style="display:flex;"><span>        ciphertext <span style="color:#f92672">=</span> ciphertext[<span style="color:#ae81ff">8</span>:]
+</span></span><span style="display:flex;"><span>        cipher <span style="color:#f92672">=</span> AES<span style="color:#f92672">.</span>new(self<span style="color:#f92672">.</span>key, AES<span style="color:#f92672">.</span>MODE_GCM, nonce<span style="color:#f92672">=</span>nonce)
+</span></span><span style="display:flex;"><span>        plaintext <span style="color:#f92672">=</span> cipher<span style="color:#f92672">.</span>decrypt(ciphertext)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> crc32(plaintext) <span style="color:#f92672">==</span> self<span style="color:#f92672">.</span>CRC0:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(<span style="color:#e6db74">&#34;Invalid CRC&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> plaintext[:<span style="color:#f92672">-</span><span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DoublyChecksummedCipher</span>(ChecksummedCipher):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;you can never be too safe&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, key: bytes):
+</span></span><span style="display:flex;"><span>        key <span style="color:#f92672">=</span> sha256(key)<span style="color:#f92672">.</span>digest()
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span>__init__(key[<span style="color:#ae81ff">16</span>:])
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>cipher <span style="color:#f92672">=</span> ChecksummedCipher(key[:<span style="color:#ae81ff">16</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encrypt</span>(self, plaintext: bytes) <span style="color:#f92672">-&gt;</span> bytes:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>cipher<span style="color:#f92672">.</span>encrypt(super()<span style="color:#f92672">.</span>encrypt(plaintext))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decrypt</span>(self, ciphertext: bytes) <span style="color:#f92672">-&gt;</span> bytes:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> super()<span style="color:#f92672">.</span>decrypt(self<span style="color:#f92672">.</span>cipher<span style="color:#f92672">.</span>decrypt(ciphertext))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cc <span style="color:#f92672">=</span> DoublyChecksummedCipher(bytes<span style="color:#f92672">.</span>fromhex(os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;KEY&#34;</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@dataclass</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GameState</span>:
+</span></span><span style="display:flex;"><span>    won: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    tied: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    lost: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    played: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    id: str <span style="color:#f92672">=</span> field(
+</span></span><span style="display:flex;"><span>            default_factory<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span>: b64encode(os<span style="color:#f92672">.</span>urandom(<span style="color:#ae81ff">16</span>))<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_cookie_or_default</span>(cookie: bytes <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span>) <span style="color:#f92672">-&gt;</span> GameState:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        cookie <span style="color:#f92672">=</span> b64decode(cookie)
+</span></span><span style="display:flex;"><span>        state <span style="color:#f92672">=</span> cc<span style="color:#f92672">.</span>decrypt(cookie)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> GameState(<span style="color:#f92672">**</span>json<span style="color:#f92672">.</span>loads(state))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> GameState()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;GET&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>():
+</span></span><span style="display:flex;"><span>    state <span style="color:#f92672">=</span> parse_cookie_or_default(request<span style="color:#f92672">.</span>cookies<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;session&#34;</span>))
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> make_response(render_template(<span style="color:#e6db74">&#34;page.html&#34;</span>, state<span style="color:#f92672">=</span>state))
+</span></span><span style="display:flex;"><span>    res<span style="color:#f92672">.</span>set_cookie(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;session&#34;</span>, b64encode(
+</span></span><span style="display:flex;"><span>                        cc<span style="color:#f92672">.</span>encrypt(json<span style="color:#f92672">.</span>dumps(asdict(state))<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>                    )<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> res
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/play/&lt;string:user_choice&gt;&#34;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;POST&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">play</span>(user_choice):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> user_choice <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;rock&#34;</span>, <span style="color:#e6db74">&#34;paper&#34;</span>, <span style="color:#e6db74">&#34;scissors&#34;</span>]:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Invalid choice&#34;</span>, <span style="color:#ae81ff">400</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    server_choice <span style="color:#f92672">=</span> SystemRandom()<span style="color:#f92672">.</span>choice([<span style="color:#e6db74">&#34;rock&#34;</span>, <span style="color:#e6db74">&#34;paper&#34;</span>, <span style="color:#e6db74">&#34;scissors&#34;</span>])
+</span></span><span style="display:flex;"><span>    state <span style="color:#f92672">=</span> parse_cookie_or_default(request<span style="color:#f92672">.</span>cookies<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;session&#34;</span>))
+</span></span><span style="display:flex;"><span>    print(state)
+</span></span><span style="display:flex;"><span>    state<span style="color:#f92672">.</span>played <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> server_choice <span style="color:#f92672">==</span> user_choice:
+</span></span><span style="display:flex;"><span>        state<span style="color:#f92672">.</span>tied <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> (
+</span></span><span style="display:flex;"><span>        (user_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;rock&#34;</span> <span style="color:#f92672">and</span> server_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;scissors&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">or</span> (user_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;paper&#34;</span> <span style="color:#f92672">and</span> server_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;rock&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">or</span> (user_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;scissors&#34;</span> <span style="color:#f92672">and</span> server_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;paper&#34;</span>)
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        state<span style="color:#f92672">.</span>won <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        state<span style="color:#f92672">.</span>lost <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    json_res <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;choice&#34;</span>: server_choice}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> state<span style="color:#f92672">.</span>won <span style="color:#f92672">==</span> state<span style="color:#f92672">.</span>played <span style="color:#f92672">==</span> <span style="color:#ae81ff">100</span>:
+</span></span><span style="display:flex;"><span>        json_res[<span style="color:#e6db74">&#34;flag&#34;</span>] <span style="color:#f92672">=</span> FLAG
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> app<span style="color:#f92672">.</span>response_class(
+</span></span><span style="display:flex;"><span>        response<span style="color:#f92672">=</span>json<span style="color:#f92672">.</span>dumps(json_res),
+</span></span><span style="display:flex;"><span>        status<span style="color:#f92672">=</span><span style="color:#ae81ff">200</span>,
+</span></span><span style="display:flex;"><span>        mimetype<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;application/json&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    res<span style="color:#f92672">.</span>set_cookie(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;session&#34;</span>, b64encode(
+</span></span><span style="display:flex;"><span>                        cc<span style="color:#f92672">.</span>encrypt(json<span style="color:#f92672">.</span>dumps(asdict(state))<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>                    )<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> res
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(port<span style="color:#f92672">=</span><span style="color:#ae81ff">1337</span>, debug<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><h2 id="the-solve">The Solve?</h2>
+<p>When I opened the challenge the first time I actually ignored the cookie
+cipher completely, noticing that nothing is saving the game state on the
+server side: it is completely contained inside the cookie.
+<br>
+<br>
+So, this crypto is now a web!
+<br>
+<br>
+What we can do is to save our cookie locally and play a round:</p>
+<ul>
+<li>If we win, we save our new cookie and continue playing</li>
+<li>If we lose, we retry with our saved cookie
+We can keep this up until we have won 100 games &ldquo;in a row&rdquo; and get
+the flag without reading a single crypto line.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>URL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://127.0.0.1:1337&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s<span style="color:#f92672">.</span>get(URL)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>saved_cookies <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>cookies<span style="color:#f92672">.</span>get_dict()[<span style="color:#e6db74">&#39;session&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>post(URL <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/play/paper&#34;</span>)<span style="color:#f92672">.</span>json()
+</span></span><span style="display:flex;"><span>    server_choice <span style="color:#f92672">=</span> res[<span style="color:#e6db74">&#39;choice&#39;</span>]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;flag&#39;</span> <span style="color:#f92672">in</span> res:
+</span></span><span style="display:flex;"><span>        print(res[<span style="color:#e6db74">&#39;flag&#39;</span>])
+</span></span><span style="display:flex;"><span>        exit()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> server_choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;rock&#39;</span>:
+</span></span><span style="display:flex;"><span>        saved_cookies <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>cookies<span style="color:#f92672">.</span>get_dict()[<span style="color:#e6db74">&#39;session&#39;</span>]
+</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>        s<span style="color:#f92672">.</span>cookies<span style="color:#f92672">.</span>set(<span style="color:#e6db74">&#34;session&#34;</span>, saved_cookies)
+</span></span></code></pre></div><p>With this i managed to get the first blood on this challenge .w.</p>
+<h2 id="the-solve-1">The Solve</h2>
+<p>Needless to say, this was a major unintended and soon a v2 of this
+challenge was released with this lines added in the game handling logic:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> state<span style="color:#f92672">.</span>played <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">5</span>:
+</span></span><span style="display:flex;"><span>    state <span style="color:#f92672">=</span> GameState()
+</span></span></code></pre></div><p>Ok, so we&rsquo;re not winning this the traditional way, we have to manipulate
+some cookies and actually do crypto :3
+<br>
+<br>
+Taking a look at the ChecksummedCipher we see it&rsquo;s AES-GCM with a crc32
+checksum inside the plaintext.
+<br>
+<br>
+Despite this being <em>technically</em> AES-GCM, the cipher doesn&rsquo;t use nor verify
+any tag, so this really becomes AES-CTR with a cooler name.</p>
+<p>This is pretty useful to us since AES-CTR is basically a big xor, and we
+know <em>most</em> of the plaintext, but remember, this is applied twice, so
+our final ciphertext will be
+</p>
+$$ \text{ct} = \text{nonce}_b | E_b(\text{nonce}_a) | E_b(E_a(\text{pt})) | E_b(E_a(\text{crc}_a)) | E_b(\text{crc}_b) $$
+<p>We don&rsquo;t really care how many times something is encrypted, since we can treat $E_x$ as an otp and therefore
+</p>
+$$E_x(\text{pt}) \oplus \Delta = E_x(\text{pt} \oplus \Delta) $$
+<p>So, let&rsquo;s construct our modified ciphertext!
+We can&rsquo;t really modify the nonces in any meaningful way without garbling
+everything, so we&rsquo;re keeping em the same
+</p>
+$$ \text{new\_ct} = \text{nonce}_b | E_b(\text{nonce}_a) $$
+<p>Modifying the plaintext is kind of the point, so we can just xor that
+section with the difference between winning and losing pts, call that $\Delta$
+</p>
+$$ \text{new\_ct} = \text{nonce}_b | E_b(\text{nonce}_a) | E_b(E_a(\text{pt})) \oplus \Delta$$
+<p>Now AES-CTR will decrypt it to our desired plaintext, but the crc will be wrong!
+Luckily, crc is also linear in Z2, specifically:
+</p>
+$$ \text{crc}_a \oplus \text{crc}_b \oplus \text{crc}_c = \text{crc}_{a \oplus b \oplus c} $$
+<p>and therefore
+</p>
+$$ \text{crc}_a \oplus \text{crc}_b \oplus \text{crc}_0 = \text{crc}_{a \oplus b} $$
+$$ \text{crc}_{\text{pt} \oplus \Delta} = \text{crc}_\text{pt} \oplus \Delta \oplus \text{crc}_0 $$
+$$ \text{new\_ct} = \text{nonce}_b | E_b(\text{nonce}_a) | E_b(E_a(\text{pt})) \oplus \Delta | E_b(E_a(\text{crc}_a)) \oplus \text{crc}_\Delta \oplus \text{crc}_0 $$
+<p>Now for the last crc we do&hellip; nothing! This stems from the fact that
+</p>
+$$ \text{crc}_{x | \text{crc}_x} = 0 $$
+<p>Since the first ciphertext is
+</p>
+$$E_a(\text{pt} | \text{crc}_\text{pt}) = \text{otp}_a \oplus (\text{pt} | \text{crc}_\text{pt})$$
+<p>its crc will be
+</p>
+$$ \text{crc}_{\text{otp}_a} \oplus \text{crc}_{\text{pt} | \text{crc}_\text{pt}} \oplus \text{crc}_0 = \text{crc}_{\text{otp}_a} \oplus \text{crc}_0 $$
+<p>which depends only on the encryption key of the first cipher, and is therefore constant.
+So our winning ciphertext is
+</p>
+$$ \text{new\_ct} = \text{nonce}_b | E_b(\text{nonce}_a) | E_b(E_a(\text{pt})) \oplus \Delta | E_b(E_a(\text{crc}_a)) \oplus \text{crc}_\Delta \oplus \text{crc}_0 | E_b(\text{crc}_b) $$
+<p>Once we have our new cookie we can just keep playing using it as session until we win.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64decode, b64encode
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> zlib <span style="color:#f92672">import</span> crc32
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>URL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://127.0.0.1:1337&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xor <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> a, b: bytes([aa <span style="color:#f92672">^</span> bb <span style="color:#66d9ef">for</span> aa, bb <span style="color:#f92672">in</span> zip(a, b)])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The id field is a random base64 encoded value that we don&#39;t know</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># but it&#39;s not used, so we just keep it as is</span>
+</span></span><span style="display:flex;"><span>pt <span style="color:#f92672">=</span>     <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;{&#34;won&#34;: 0, &#34;tied&#34;: 0, &#34;lost&#34;: 0, &#34;played&#34;: 0, &#34;id&#34;: &#34;&#39;</span> 
+</span></span><span style="display:flex;"><span>newpt <span style="color:#f92672">=</span>  <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;{&#34;won&#34;: 100,&#34;tied&#34;: 0,&#34;lost&#34;: 0,&#34;played&#34;: 99, &#34;id&#34;: &#34;&#39;</span>
+</span></span><span style="display:flex;"><span>pt <span style="color:#f92672">+=</span>    <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\0</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">24</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span>newpt <span style="color:#f92672">+=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\0</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">24</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>delta <span style="color:#f92672">=</span> xor(pt, newpt)
+</span></span><span style="display:flex;"><span>delta <span style="color:#f92672">+=</span> (crc32(delta) <span style="color:#f92672">^</span> crc32(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\0</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">*</span> len(delta)))<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;little&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ct <span style="color:#f92672">=</span> b64decode(requests<span style="color:#f92672">.</span>get(URL)<span style="color:#f92672">.</span>cookies[<span style="color:#e6db74">&#39;session&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nonces <span style="color:#f92672">=</span> ct[:<span style="color:#ae81ff">16</span>]
+</span></span><span style="display:flex;"><span>enc_data <span style="color:#f92672">=</span> ct[<span style="color:#ae81ff">16</span>:]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>new_enc_data <span style="color:#f92672">=</span> xor(enc_data, delta <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\0</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">128</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>session <span style="color:#f92672">=</span> b64encode(nonces <span style="color:#f92672">+</span> new_enc_data)<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>res <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(URL <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/play/rock&#39;</span>,
+</span></span><span style="display:flex;"><span>                        cookies<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;session&#34;</span>:session}
+</span></span><span style="display:flex;"><span>                    )<span style="color:#f92672">.</span>json()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#e6db74">&#39;flag&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> res:
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(URL <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/play/rock&#39;</span>,
+</span></span><span style="display:flex;"><span>                            cookies<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;session&#34;</span>:session}
+</span></span><span style="display:flex;"><span>                        )<span style="color:#f92672">.</span>json()
+</span></span><span style="display:flex;"><span>print(res[<span style="color:#e6db74">&#39;flag&#39;</span>])
+</span></span></code></pre></div>
+
+  </main>
+  <footer>
+    <p>Copyright 2024. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cypto on Fwame&#39;s writeup collection</title>
+    <link>http://localhost:1313/tags/cypto/</link>
+    <description>Recent content in Cypto on Fwame&#39;s writeup collection</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Jan 2023 09:00:00 -0700</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/cypto/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RSA W Leak</title>
+      <link>http://localhost:1313/posts/mocactf24/rsa-w-leak/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>http://localhost:1313/posts/mocactf24/rsa-w-leak/</guid>
+      <description>Like the name implies, this is a normal RSA with leak challenge: we are given a standard RSA public key, ciphertext and a leak $$ \text{leak} = \lfloor2^{8192}(\frac{r_0}{\phi(N)} + \frac{r_1}{N}) \rfloor$$ with $r_0$ and $r_1$ random integers.&#xA;from Crypto.Util.number import getStrongPrime import secrets from mpmath import mp, mpf p = getStrongPrime(1024) q = getStrongPrime(1024) n = p*q e = 65537 phi = (p-1)*(q-1) d = pow(e, -1, phi) mp.dps = 8192 leak = mpf(secrets.</description>
+    </item>
+  </channel>
+</rss>

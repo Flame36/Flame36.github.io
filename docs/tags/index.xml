@@ -11,43 +11,78 @@
     <item>
       <title>Crypto</title>
       <link>https://writeups.deflame.xyz/tags/crypto/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 24 Jun 2024 23:30:35 +0200</pubDate>
       <guid>https://writeups.deflame.xyz/tags/crypto/</guid>
       <description></description>
     </item>
     <item>
       <title>Ecc</title>
       <link>https://writeups.deflame.xyz/tags/ecc/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 24 Jun 2024 23:30:35 +0200</pubDate>
       <guid>https://writeups.deflame.xyz/tags/ecc/</guid>
       <description></description>
     </item>
     <item>
       <title>Ecdh</title>
       <link>https://writeups.deflame.xyz/tags/ecdh/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 24 Jun 2024 23:30:35 +0200</pubDate>
       <guid>https://writeups.deflame.xyz/tags/ecdh/</guid>
       <description></description>
     </item>
     <item>
       <title>Blue</title>
       <link>https://writeups.deflame.xyz/tags/blue/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Mar 2023 11:00:00 -0700</pubDate>
       <guid>https://writeups.deflame.xyz/tags/blue/</guid>
       <description></description>
     </item>
     <item>
       <title>Green</title>
       <link>https://writeups.deflame.xyz/tags/green/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Mar 2023 11:00:00 -0700</pubDate>
       <guid>https://writeups.deflame.xyz/tags/green/</guid>
       <description></description>
     </item>
     <item>
       <title>Red</title>
       <link>https://writeups.deflame.xyz/tags/red/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Mar 2023 11:00:00 -0700</pubDate>
       <guid>https://writeups.deflame.xyz/tags/red/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Challenge</title>
+      <link>https://writeups.deflame.xyz/tags/challenge/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/tags/challenge/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lattices</title>
+      <link>https://writeups.deflame.xyz/tags/lattices/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/tags/lattices/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mocactf24</title>
+      <link>https://writeups.deflame.xyz/tags/mocactf24/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/tags/mocactf24/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Symmetric</title>
+      <link>https://writeups.deflame.xyz/tags/symmetric/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/tags/symmetric/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Web</title>
+      <link>https://writeups.deflame.xyz/tags/web/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/tags/web/</guid>
       <description></description>
     </item>
   </channel>

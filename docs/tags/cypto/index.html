@@ -20,7 +20,7 @@
   
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
-<title>Post 1 | Fwame&#39;s writeup collection</title>
+<title>Cypto | Fwame&#39;s writeup collection</title>
 
     <link rel="stylesheet" href="/css/main.css">
 
@@ -52,20 +52,25 @@
   </header>
   <main>
     
-  <h1>Post 1</h1>
-
+  <h1>Cypto</h1>
   
   
-  <div style="display: flex; justify-content: space-between;">
-    <time datetime="2023-01-15T09:00:00-07:00">January 15, 2023</time>
-    <span style="color: var(--h2-color);">
-      <a href="/tags/red/">red</a>
-</span>
-  </div>
+    <a href="/posts/mocactf24/rsa-w-leak/">
+      <div class="bubble">
+        <h2 style="margin-bottom: .5rem;">RSA W Leak</h2>
+        Like the name implies, this is a normal RSA with leak challenge: we are given a standard RSA public key, ciphertext and a leak $$ \text{leak} = \lfloor2^{8192}(\frac{r_0}{\phi(N)} + \frac{r_1}{N}) \rfloor$$ with $r_0$ and $r_1$ random integers.
+from Crypto.Util.number import getStrongPrime import secrets from mpmath import mp, mpf p = getStrongPrime(1024) q = getStrongPrime(1024) n = p*q e = 65537 phi = (p-1)*(q-1) d = pow(e, -1, phi) mp.dps = 8192 leak = mpf(secrets.
+        <div class="tags">
+          
+      <a href="/tags/mocactf24/">mocactf24</a>
+      <a href="/tags/challenge/">challenge</a>
+      <a href="/tags/lattices/">lattices</a>
+      <a href="/tags/cypto/">cypto</a>
 
-  <p>Tempor proident minim aliquip reprehenderit dolor et ad anim Lorem duis sint eiusmod. Labore ut ea duis dolor. Incididunt consectetur proident qui occaecat incididunt do nisi Lorem. Tempor do laborum elit laboris excepteur eiusmod do. Eiusmod nisi excepteur ut amet pariatur adipisicing Lorem.</p>
-<p>Occaecat nulla excepteur dolore excepteur duis eiusmod ullamco officia anim in voluptate ea occaecat officia. Cillum sint esse velit ea officia minim fugiat. Elit ea esse id aliquip pariatur cupidatat id duis minim incididunt ea ea. Anim ut duis sunt nisi. Culpa cillum sit voluptate voluptate eiusmod dolor. Enim nisi Lorem ipsum irure est excepteur voluptate eu in enim nisi. Nostrud ipsum Lorem anim sint labore consequat do.</p>
-
+        </div>
+      </div>
+    </a>
+  
 
   </main>
   <footer>

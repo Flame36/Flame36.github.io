@@ -15,5 +15,19 @@
       <guid>https://writeups.deflame.xyz/posts/test/</guid>
       <description>Title Title2 Sample text&#xA;import random def main(x): res = 0 for i in range(x): res += i * 2 print(f&amp;#34;{res = }&amp;#34;) if __name__ == &amp;#34;__main__&amp;#34;: main(999) $$ ax_n + b = x_{n+1} \bmod N$$ </description>
     </item>
+    <item>
+      <title>RPS</title>
+      <link>https://writeups.deflame.xyz/posts/mocactf24/rps/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/posts/mocactf24/rps/</guid>
+      <description>In this challenge we&amp;rsquo;re given a rock-paper-scissors playing server with a custom cookie system and our objective is to win 100 consecutive games. The state is stored completely inside of a session cookie encrypted with a custom symmetric cipher.&#xA;import json import os from random import SystemRandom from base64 import b64decode, b64encode from dataclasses import asdict, dataclass, field from hashlib import sha256 from zlib import crc32 from Crypto.Cipher import AES from flask import Flask, make_response, render_template, request app = Flask(__name__) FLAG = os.</description>
+    </item>
+    <item>
+      <title>RSA W Leak</title>
+      <link>https://writeups.deflame.xyz/posts/mocactf24/rsa-w-leak/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/posts/mocactf24/rsa-w-leak/</guid>
+      <description>Like the name implies, this is a normal RSA with leak challenge: we are given a standard RSA public key, ciphertext and a leak $$ \text{leak} = \lfloor2^{8192}(\frac{r_0}{\phi(N)} + \frac{r_1}{N}) \rfloor$$ with $r_0$ and $r_1$ random integers.&#xA;from Crypto.Util.number import getStrongPrime import secrets from mpmath import mp, mpf p = getStrongPrime(1024) q = getStrongPrime(1024) n = p*q e = 65537 phi = (p-1)*(q-1) d = pow(e, -1, phi) mp.dps = 8192 leak = mpf(secrets.</description>
+    </item>
   </channel>
 </rss>

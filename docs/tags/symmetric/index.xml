@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Symmetric on Fwame&#39;s writeup collection</title>
+    <link>https://writeups.deflame.xyz/tags/symmetric/</link>
+    <description>Recent content in Symmetric on Fwame&#39;s writeup collection</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Jan 2023 09:00:00 -0700</lastBuildDate>
+    <atom:link href="https://writeups.deflame.xyz/tags/symmetric/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RPS</title>
+      <link>https://writeups.deflame.xyz/posts/mocactf24/rps/</link>
+      <pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+      <guid>https://writeups.deflame.xyz/posts/mocactf24/rps/</guid>
+      <description>In this challenge we&amp;rsquo;re given a rock-paper-scissors playing server with a custom cookie system and our objective is to win 100 consecutive games. The state is stored completely inside of a session cookie encrypted with a custom symmetric cipher.&#xA;import json import os from random import SystemRandom from base64 import b64decode, b64encode from dataclasses import asdict, dataclass, field from hashlib import sha256 from zlib import crc32 from Crypto.Cipher import AES from flask import Flask, make_response, render_template, request app = Flask(__name__) FLAG = os.</description>
+    </item>
+  </channel>
+</rss>
